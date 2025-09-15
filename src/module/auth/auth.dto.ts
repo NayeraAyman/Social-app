@@ -1,4 +1,4 @@
-import { GENDER } from "../../utils/common/enum";
+import { GENDER } from "../../utils";
 
 export interface RegisterDTO {
   fullName?: string;
@@ -12,12 +12,12 @@ export interface LoginDTO {
   password: string;
 }
 
-export interface VerifyAccountDTO{
-  email:string,
-  otp:string
+export interface VerifyAccountDTO {
+  email: string;
+  otp: string;
 }
-export interface ResendOtpDTO{
-  email:string
+export interface ResendOtpDTO {
+  email: string;
 }
 
 export interface UpdateUserDto extends Partial<RegisterDTO> {}

@@ -1,15 +1,20 @@
-import { SYS_ROLE, USER_AGENT } from "../../../utils/common/enum";
-import { encryptPhone } from "../../../utils/encrypt";
-import { generateHash } from "../../../utils/hash";
-import { generateExpiryDate, generateOTP } from "../../../utils/otp";
+import { SYS_ROLE, USER_AGENT } from "../../../utils";
+import { encryptPhone } from "../../../utils";
+import { generateHash } from "../../../utils";
+import { generateExpiryDate, generateOTP } from "../../../utils";
 import { User } from "../entity";
-import { LoginDTO, RegisterDTO, ResendOtpDTO, VerifyAccountDTO } from "./../auth.dto";
+import {
+  LoginDTO,
+  RegisterDTO,
+  ResendOtpDTO,
+  VerifyAccountDTO,
+} from "./../auth.dto";
 export class AuthFactoryService {
-  register(registerDTO: RegisterDTO) {
+  async register(registerDTO: RegisterDTO) {
     const user = new User();
     user.fullName = registerDTO.fullName as string;
-    user.email = registerDTO.email; 
-    user.password = generateHash(registerDTO.password);
+    user.email = registerDTO.email;
+    user.password = await generateHash(registerDTO.password);
     if (registerDTO.phoneNumber) {
       user.phoneNumber = JSON.stringify(encryptPhone(registerDTO.phoneNumber));
     }
@@ -29,13 +34,13 @@ export class AuthFactoryService {
     user.password = loginDTO.password;
     return user;
   }
-  verifyAccount(verifyAccountDTO : VerifyAccountDTO){
+  verifyAccount(verifyAccountDTO: VerifyAccountDTO) {
     const user = new User();
     user.email = verifyAccountDTO.email;
     user.otp = verifyAccountDTO.otp;
     return user;
   }
-  resendOtp(resendOtpDTO : ResendOtpDTO){
+  resendOtp(resendOtpDTO: ResendOtpDTO) {
     const user = new User();
     user.email = resendOtpDTO.email;
     return user;

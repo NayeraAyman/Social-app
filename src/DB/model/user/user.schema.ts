@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
-import { IUser } from "../../../utils/common/interfaces";
-import { GENDER, SYS_ROLE, USER_AGENT } from "../../../utils/common/enum";
+import { IUser } from "../../../utils";
+import { GENDER, SYS_ROLE, USER_AGENT } from "../../../utils";
 
 export const userSchema = new Schema<IUser>(
   {
@@ -43,9 +43,9 @@ export const userSchema = new Schema<IUser>(
     otpExpiryAt: {
       type: Date,
     },
-    isVerified:{
-      type:Boolean,
-      default:false
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     failedOtpAttempts: {
       type: Number,
