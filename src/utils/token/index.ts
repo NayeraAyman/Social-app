@@ -1,5 +1,5 @@
 import jwt, { SignOptions, JwtPayload } from "jsonwebtoken";
-
+import { devConfig } from "../../config/env/dev.config";
 interface TokenPayload {
   id: string;
 }
@@ -29,18 +29,18 @@ function resolveExpiresIn(
   return value as StringValue;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "defaultSecret";
-const ACCESS_EXPIRE = process.env.ACCESS_EXPIRE as StringValue | undefined;
-const REFRESH_EXPIRE = process.env.REFRESH_EXPIRE as StringValue | undefined;
+const JWT_SECRET = devConfig.JWT_SECRET || "defaultSecret";
+const ACCESS_EXPIRE = devConfig.ACCESS_EXPIRE as StringValue | undefined;
+const REFRESH_EXPIRE = devConfig.REFRESH_EXPIRE as StringValue | undefined;
 
 export function generateAccessToken(payload: TokenPayload): string {
-  const expiresIn = resolveExpiresIn(ACCESS_EXPIRE, process.env.ACCESS_EXPIRE as StringValue);
+  const expiresIn = resolveExpiresIn(ACCESS_EXPIRE, devConfig.ACCESS_EXPIRE as StringValue);
   const options: SignOptions = { expiresIn };
   return jwt.sign(payload, JWT_SECRET, options);
 }
 
 export function generateRefreshToken(payload: TokenPayload): string {
-  const expiresIn = resolveExpiresIn(REFRESH_EXPIRE, process.env.REFRESH_EXPIRE as StringValue);
+  const expiresIn = resolveExpiresIn(REFRESH_EXPIRE, devConfig.REFRESH_EXPIRE as StringValue);
   const options: SignOptions = { expiresIn };
   return jwt.sign(payload, JWT_SECRET, options);
 }

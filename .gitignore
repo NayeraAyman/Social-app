@@ -1,2 +1,4 @@
-config/dev.env
 node_modules/
+.env
+config/dev.config.ts
+config/prod.config.ts

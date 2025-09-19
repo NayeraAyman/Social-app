@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userSchema = void 0;
 const mongoose_1 = require("mongoose");
-const enum_1 = require("../../../utils/common/enum");
+const utils_1 = require("../../../utils");
+const utils_2 = require("../../../utils");
 exports.userSchema = new mongoose_1.Schema({
     firstName: {
         type: String,
@@ -28,16 +29,16 @@ exports.userSchema = new mongoose_1.Schema({
     password: {
         type: String,
         required: function () {
-            if (this.userAgent == enum_1.USER_AGENT.google)
+            if (this.userAgent == utils_2.USER_AGENT.google)
                 return false;
             return true;
         },
     },
     credentialUpdatedAt: Date,
     phoneNumber: String,
-    role: { type: String, enum: enum_1.SYS_ROLE, default: enum_1.SYS_ROLE.user },
-    gender: { type: String, enum: enum_1.GENDER, default: enum_1.GENDER.male },
-    userAgent: { type: String, enum: enum_1.USER_AGENT, default: enum_1.USER_AGENT.local },
+    role: { type: String, enum: utils_2.SYS_ROLE, default: utils_2.SYS_ROLE.user },
+    gender: { type: String, enum: utils_2.GENDER, default: utils_2.GENDER.male },
+    userAgent: { type: String, enum: utils_2.USER_AGENT, default: utils_2.USER_AGENT.local },
     otp: {
         type: String,
     },
@@ -46,7 +47,7 @@ exports.userSchema = new mongoose_1.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: false
+        default: false,
     },
     failedOtpAttempts: {
         type: Number,
@@ -66,4 +67,8 @@ exports.userSchema
     const [fName, lName] = value.split(" ");
     this.firstName = fName;
     this.lastName = lName;
+});
+exports.userSchema.pre("save", async function () {
+    if (this.userAgent != utils_2.USER_AGENT.google && this.isNew == true)
+        await (0, utils_1.sendMail)(this.email, "Verify your email", `<p>your otp to verify your account is ${this.otp} </p>`);
 });

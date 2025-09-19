@@ -16,6 +16,7 @@ import { sendMail } from "../../utils";
 import { compareHash } from "../../utils";
 import { generateAccessToken, generateRefreshToken } from "../../utils";
 import { generateExpiryDate, generateOTP } from "../../utils";
+import { authProvider } from "./provider/auth.provider";
 
 class AuthService {
   private userRepository = new UserRepository();
@@ -35,21 +36,14 @@ class AuthService {
     }
     //prepare data >>  user document >> hashing - encryption
     const user = await this.authFactoryService.register(registerDTO);
-    //send email verify [otp]
-    if (registerDTO.email) {
-      sendMail(
-        registerDTO.email,
-        "Verify your email",
-        `<p>your otp to verify your account is ${user.otp} </p>`
-      );
-    }
+
     //save into db
     const createdUser = await this.userRepository.create(user);
     //send response
     res.status(201).json({
       message: "user created successfully",
       success: true,
-      data: createdUser,
+      data: { id: createdUser.id },
     });
   };
   login = async (req: Request, res: Response, next: NextFunction) => {
@@ -84,43 +78,23 @@ class AuthService {
     //get data from req
     const verifyAccountDTO: VerifyAccountDTO = req.body;
     //check user Exist
-    const userExist = await this.userRepository.exist({
-      email: verifyAccountDTO.email,
-    });
-    if (!userExist) {
-      throw new ConflictException("invalid otp");
-    }
+
     //check user is banned
-    if (userExist.bannedUntil && userExist.bannedUntil.getTime() > Date.now()) {
-      const minutesLeft = Math.ceil(
-        (userExist.bannedUntil.getTime() - Date.now()) / 60000
-      );
-      throw new TooManyRequestsException(
-        `you are banned . try again in ${minutesLeft} minutes`
-      );
-    }
+
     //check otp expire
-    if (
-      !userExist.otp ||
-      (userExist.otpExpiryAt as Date).getTime() < Date.now()
-    ) {
-      throw new NotAuthorizedException("otp expired");
-    }
-    if (userExist.otp !== verifyAccountDTO.otp) {
-      userExist.failedOtpAttempts = (userExist.failedOtpAttempts || 0) + 1;
-      if ((userExist.failedOtpAttempts as number) >= 5) {
-        userExist.bannedUntil = new Date(Date.now() + 5 * 60 * 1000);
-      }
-      await userExist.save();
-      throw new NotAuthorizedException("invalid otp");
-    }
+    await authProvider.chechOtp(verifyAccountDTO);
     //update user
-    userExist.isVerified = true;
-    userExist.otp = undefined as unknown as string;
-    userExist.otpExpiryAt = undefined as unknown as Date;
-    userExist.failedOtpAttempts = 0;
-    userExist.bannedUntil = undefined as unknown as Date;
-    await userExist.save();
+    await this.userRepository.update(
+      { email: verifyAccountDTO.email },
+      {
+        isVerified: true,
+        otp: undefined as unknown as string,
+        otpExpiryAt: undefined as unknown as Date,
+        failedOtpAttempts: 0,
+        bannedUntil: undefined as unknown as Date,
+      }
+    );
+    // await userExist.save();
     //send response
     res.status(200).json({
       message: "user verified successfully",
@@ -171,6 +145,12 @@ class AuthService {
       success: true,
     });
   };
+  forgetPassword = async(req:Request,res:Response,next:NextFunction)=>{
+  
+  }
+  resetPassword = async(req:Request,res:Response,next:NextFunction)=>{
+    
+  }
 }
 
 export default new AuthService();

@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.encryptPhone = encryptPhone;
 exports.decryptPhone = decryptPhone;
 const crypto_1 = __importDefault(require("crypto"));
+const dev_config_1 = require("../../config/env/dev.config");
 const ALGORITHM = "aes-256-cbc";
-const KEY = Buffer.from(process.env.PHONE_SECRET_KEY || "", "utf-8");
+const KEY = Buffer.from(dev_config_1.devConfig.PHONE_SECRET_KEY || "", "utf-8");
 // encryption
 function encryptPhone(phone) {
     const iv = crypto_1.default.randomBytes(16);

@@ -7,6 +7,7 @@ exports.generateAccessToken = generateAccessToken;
 exports.generateRefreshToken = generateRefreshToken;
 exports.verifyToken = verifyToken;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dev_config_1 = require("../../config/env/dev.config");
 /**
  * Helper function to normalize expiresIn value
  */
@@ -18,16 +19,16 @@ function resolveExpiresIn(value, fallback) {
     }
     return value;
 }
-const JWT_SECRET = process.env.JWT_SECRET || "defaultSecret";
-const ACCESS_EXPIRE = process.env.ACCESS_EXPIRE;
-const REFRESH_EXPIRE = process.env.REFRESH_EXPIRE;
+const JWT_SECRET = dev_config_1.devConfig.JWT_SECRET || "defaultSecret";
+const ACCESS_EXPIRE = dev_config_1.devConfig.ACCESS_EXPIRE;
+const REFRESH_EXPIRE = dev_config_1.devConfig.REFRESH_EXPIRE;
 function generateAccessToken(payload) {
-    const expiresIn = resolveExpiresIn(ACCESS_EXPIRE, process.env.ACCESS_EXPIRE);
+    const expiresIn = resolveExpiresIn(ACCESS_EXPIRE, dev_config_1.devConfig.ACCESS_EXPIRE);
     const options = { expiresIn };
     return jsonwebtoken_1.default.sign(payload, JWT_SECRET, options);
 }
 function generateRefreshToken(payload) {
-    const expiresIn = resolveExpiresIn(REFRESH_EXPIRE, process.env.REFRESH_EXPIRE);
+    const expiresIn = resolveExpiresIn(REFRESH_EXPIRE, dev_config_1.devConfig.REFRESH_EXPIRE);
     const options = { expiresIn };
     return jsonwebtoken_1.default.sign(payload, JWT_SECRET, options);
 }

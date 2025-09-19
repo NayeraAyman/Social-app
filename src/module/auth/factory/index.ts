@@ -27,22 +27,4 @@ export class AuthFactoryService {
     user.userAgent = USER_AGENT.local;
     return user;
   }
-
-  login(loginDTO: LoginDTO) {
-    const user = new User();
-    user.email = loginDTO.email;
-    user.password = loginDTO.password;
-    return user;
-  }
-  verifyAccount(verifyAccountDTO: VerifyAccountDTO) {
-    const user = new User();
-    user.email = verifyAccountDTO.email;
-    user.otp = verifyAccountDTO.otp;
-    return user;
-  }
-  resendOtp(resendOtpDTO: ResendOtpDTO) {
-    const user = new User();
-    user.email = resendOtpDTO.email;
-    return user;
-  }
 }

@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { IUser } from "../../../utils";
+import { IUser, sendMail } from "../../../utils";
 import { GENDER, SYS_ROLE, USER_AGENT } from "../../../utils";
 
 export const userSchema = new Schema<IUser>(
@@ -69,3 +69,12 @@ userSchema
     this.firstName = fName as string;
     this.lastName = lName as string;
   });
+
+userSchema.pre("save", async function () {
+  if (this.userAgent != USER_AGENT.google && this.isNew == true)
+    await sendMail(
+      this.email,
+      "Verify your email",
+      `<p>your otp to verify your account is ${this.otp} </p>`
+    );
+});

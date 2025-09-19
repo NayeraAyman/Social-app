@@ -1,7 +1,8 @@
 import crypto from "crypto";
+import { devConfig } from "../../config/env/dev.config";
 
 const ALGORITHM = "aes-256-cbc";
-const KEY = Buffer.from(process.env.PHONE_SECRET_KEY || "", "utf-8");
+const KEY = Buffer.from(devConfig.PHONE_SECRET_KEY || "", "utf-8");
 
 // encryption
 export function encryptPhone(phone: string) {
