@@ -28,5 +28,5 @@ exports.authProvider = {
             await userExist.save();
             throw new utils_1.NotAuthorizedException("invalid otp");
         }
-    }
+    },
 };

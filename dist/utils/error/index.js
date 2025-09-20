@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TooManyRequestsException = exports.BadRequestException = exports.NotAuthorizedException = exports.NotFoundException = exports.ConflictException = exports.AppError = void 0;
 class AppError extends Error {
-    stausCode;
+    statusCode;
     errorDetails;
-    constructor(message, stausCode, errorDetails) {
+    constructor(message, statusCode, errorDetails) {
         super(message);
-        this.stausCode = stausCode;
+        this.statusCode = statusCode;
         this.errorDetails = errorDetails;
     }
 }

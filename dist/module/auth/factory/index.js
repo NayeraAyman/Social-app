@@ -16,7 +16,7 @@ class AuthFactoryService {
             user.phoneNumber = JSON.stringify((0, utils_2.encryptPhone)(registerDTO.phoneNumber));
         }
         user.otp = (0, utils_4.generateOTP)();
-        user.otpExpiryAt = (0, utils_4.generateExpiryDate)(5 * 60 * 1000);
+        user.otpExpiryAt = (0, utils_1.generateExpiryDate)(5 * 60 * 1000);
         user.credentialUpdatedAt = Date.now();
         user.gender = registerDTO.gender;
         user.role = utils_1.SYS_ROLE.user;

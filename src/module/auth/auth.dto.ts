@@ -19,11 +19,9 @@ export interface VerifyAccountDTO {
 export interface ResendOtpDTO {
   email: string;
 }
-export interface ForgetPasswordDTO {
-    email:string
-}
 export interface ResetPasswordDTO {
     email:string
     password:string
+    otp:string
 }
 export interface UpdateUserDto extends Partial<RegisterDTO> {}

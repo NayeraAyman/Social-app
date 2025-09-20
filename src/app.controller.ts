@@ -15,13 +15,15 @@ export function bootstarp(app: Express, express: any) {
   app.use("/{*dummy}", (req, res, next) => {
     return res.status(404).json({ message: "invalid router", success: false });
   });
-  app.use(
-    (error: AppError, req: Request, res: Response, next: NextFunction) => {
-      return res.status(error.stausCode).json({
-        message: error.message,
-        success: false,
-        errorDetails: error.errorDetails,
-      });
-    }
-  );
+  //global error handler
+  app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+    const statusCode =
+      error instanceof AppError && error.statusCode ? error.statusCode : 500;
+
+    return res.status(statusCode).json({
+      message: error.message || "Internal Server Error",
+      success: false,
+      errorDetails: error.errorDetails || null,
+    });
+  });
 }

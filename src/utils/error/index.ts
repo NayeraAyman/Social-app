@@ -1,7 +1,7 @@
 export class AppError extends Error {
   constructor(
     message: string,
-    public stausCode: number,
+    public statusCode: number,
     public errorDetails?: Record<string, any>[]
   ) {
     super(message);

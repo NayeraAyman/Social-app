@@ -13,5 +13,5 @@ export class User {
   public otpExpiryAt!: Date;
   public isVerified!: boolean;
   public failedOtpAttempts!: number;
-  public bannedUntil!: Date;
+  public bannedUntil!: Date | undefined;
 }

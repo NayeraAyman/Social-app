@@ -45,4 +45,5 @@ router.post("/register", (0, middleware_1.isValid)(authValidation.registerSchema
 router.post("/login", auth_service_1.default.login);
 router.post("/verify-account", auth_service_1.default.verifyAccount);
 router.post("/resend-otp", auth_service_1.default.resendOtp);
+router.post("/reset-password", auth_service_1.default.resetPassword);
 exports.default = router;
