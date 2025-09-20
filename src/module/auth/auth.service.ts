@@ -102,51 +102,6 @@ class AuthService {
       success: true,
     });
   };
-  // resendOtp = async (req: Request, res: Response, next: NextFunction) => {
-  //   //get data from req
-  //   const resendOtp: ResendOtpDTO = req.body;
-  //   //chick user Exist
-  //   const userExist = await this.userRepository.exist({
-  //     email: resendOtp.email,
-  //   });
-  //   if (!userExist) {
-  //     throw new ConflictException("user not found");
-  //   }
-  //   if (userExist.isVerified === false) {
-  //     throw new NotAuthorizedException("user not verified");
-  //   }
-  //   //check user banned
-  //   if (userExist.bannedUntil && userExist.bannedUntil.getTime() > Date.now()) {
-  //     const minutesLeft = Math.ceil(
-  //       (userExist.bannedUntil.getTime() - Date.now()) / 60000
-  //     );
-  //     throw new TooManyRequestsException(
-  //       `you are banned . try again in ${minutesLeft} minutes`
-  //     );
-  //   }
-  //   //generate new otp
-  //   //  const {otp  , otpExpiryAt}= generateOTP()
-  //   userExist.otp = generateOTP();
-  //   userExist.otpExpiryAt = generateExpiryDate(
-  //     5 * 60 * 1000
-  //   ) as unknown as Date;
-  //   userExist.failedOtpAttempts = 0;
-  //   userExist.bannedUntil = undefined as unknown as Date;
-
-  //   await userExist.save();
-  //   //send email verify [otp]
-  //  await sendMail(
-  //     userExist.email,
-  //     "resend otp to verify your account",
-  //     `<p>your new otp to verify your account is ${userExist.otp} </p>`
-  //   );
-  //   //send response
-  //   res.status(200).json({
-  //     message: "otp resend successfully",
-  //     success: true,
-  //   });
-  // };
-
   resendOtp = async (req: Request, res: Response, next: NextFunction) => {
     const resendOtp: ResendOtpDTO = req.body;
 
