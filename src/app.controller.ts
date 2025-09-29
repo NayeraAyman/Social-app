@@ -1,15 +1,17 @@
 import { NextFunction, Request, Response, type Express } from "express";
 import { connectDB } from "./DB";
 import { AppError } from "./utils/error";
-import { authRouter, userRouter } from "./module";
+import { authRouter, userRouter, postRouter } from "./module";
 export function bootstarp(app: Express, express: any) {
   connectDB();
   app.use(express.json());
   //auth
   app.use("/auth", authRouter);
-  app.use("/user", userRouter);
   //user
+  app.use("/user", userRouter);
+
   //posts
+  app.use("/post", postRouter);
   //coments
   //messages
   app.use("/{*dummy}", (req, res, next) => {

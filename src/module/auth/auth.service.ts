@@ -9,9 +9,10 @@ import {
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   generateHash,
   IUser,
-  NotAuthorizedException,
+  UnAuthorizedException,
   TooManyRequestsException,
 } from "../../utils";
 import { UserRepository } from "../../DB";
@@ -21,6 +22,7 @@ import { compareHash } from "../../utils";
 import { generateAccessToken, generateRefreshToken } from "../../utils";
 import { generateExpiryDate, generateOTP } from "../../utils";
 import { authProvider } from "./provider/auth.provider";
+import { devConfig } from "../../config/env/dev.config";
 
 class AuthService {
   private userRepository = new UserRepository();
@@ -58,19 +60,19 @@ class AuthService {
       email: loginDTO.email,
     });
     if (!userExist) {
-      throw new ConflictException("user not found");
+      throw new ForbiddenException("invalid credentials");
     }
     if (userExist.isVerified === false) {
-      throw new NotAuthorizedException("user not verified");
+      throw new UnAuthorizedException("user not verified");
     }
     //compare password
     const match = await compareHash(loginDTO.password, userExist.password);
     if (!match) {
-      throw new NotAuthorizedException("invalid credentials");
+      throw new ForbiddenException("invalid credentials");
     }
     //generate token
-    const accessToken = generateAccessToken({ id: userExist.id });
-    const refreshToken = generateRefreshToken({ id: userExist.id });
+    const accessToken = generateAccessToken({payload: { _id: userExist._id , role: userExist.role},options: { expiresIn:"15m" }});
+    const refreshToken = generateRefreshToken({payload: { _id: userExist._id , role: userExist.role},options: { expiresIn: "7d" }});
     //send response
     res.status(200).json({
       message: "user logged in successfully",
@@ -113,7 +115,7 @@ class AuthService {
     }
 
     if (userExist.isVerified === false) {
-      throw new NotAuthorizedException("User not verified");
+      throw new UnAuthorizedException("User not verified");
     }
 
     if (userExist.bannedUntil && userExist.bannedUntil.getTime() > Date.now()) {

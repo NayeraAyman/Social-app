@@ -9,9 +9,10 @@ function bootstarp(app, express) {
     app.use(express.json());
     //auth
     app.use("/auth", module_1.authRouter);
-    app.use("/user", module_1.userRouter);
     //user
+    app.use("/user", module_1.userRouter);
     //posts
+    app.use("/post", module_1.postRouter);
     //coments
     //messages
     app.use("/{*dummy}", (req, res, next) => {

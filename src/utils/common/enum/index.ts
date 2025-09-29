@@ -1,15 +1,24 @@
 export enum SYS_ROLE {
-  user = "user",
-  admin = "admin",
-  superAdmin = "superAdmin",
+  user,
+  admin,
+  superAdmin,
 }
 
 export enum GENDER {
-  male = "male",
-  female = "female",
+  male,
+  female,
 }
 
 export enum USER_AGENT {
-  local = "local",
-  google = "google",
+  local,
+  google,
+}
+
+export enum REACTION {
+  like,
+  love,
+  haha,
+  wow,
+  sad,
+  angry,
 }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authService from "./auth.service";
-import { isValid } from "../../middleware";
+import { isAuthenticated, isValid } from "../../middleware";
 import * as authValidation from "./auth.validation";
 const router = Router();
 
@@ -9,8 +9,21 @@ router.post(
   isValid(authValidation.registerSchema),
   authService.register
 );
-router.post("/login", authService.login);
-router.post("/verify-account", authService.verifyAccount);
-router.post("/resend-otp", authService.resendOtp);
-router.post("/reset-password", authService.resetPassword);
+router.post("/login", isValid(authValidation.loginSchema), authService.login);
+router.post(
+  "/verify-account",
+  isAuthenticated(),
+  isValid(authValidation.verifyAccountSchema),
+  authService.verifyAccount
+);
+router.post(
+  "/resend-otp",
+  isValid(authValidation.resendOtpSchema),
+  authService.resendOtp
+);
+router.post(
+  "/reset-password",
+  isValid(authValidation.resetPasswordSchema),
+  authService.resetPassword
+);
 export default router;
