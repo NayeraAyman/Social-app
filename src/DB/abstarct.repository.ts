@@ -1,4 +1,5 @@
 import {
+  Document,
   Model,
   MongooseUpdateQueryOptions,
   ProjectionType,
@@ -10,9 +11,9 @@ import {
 export abstract class AbstractRepository<T> {
   constructor(protected model: Model<T>) {}
 
-  async create(item: Partial<T>) {
+  async create(item: Partial<T>): Promise<T & Document> {
     const doc = new this.model(item);
-    return await doc.save();
+    return (await doc.save()) as unknown as T & Document;
   }
   async exist(
     filter: RootFilterQuery<T>,

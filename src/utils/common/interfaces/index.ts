@@ -4,7 +4,7 @@ import { Request } from "express";
 import { ObjectId } from "mongoose";
 
 export interface IUser {
-  _id:ObjectId;
+  _id: ObjectId;
   firstName: string;
   lastName: string;
   fullName?: string;
@@ -26,10 +26,11 @@ export interface IAttachment {
   url: string;
 }
 export interface IReaction {
-    userId:ObjectId;
-    reaction:REACTION;
+  userId: ObjectId;
+  reaction: REACTION;
 }
 export interface IPost {
+  _id: ObjectId;
   userId: ObjectId;
   content: string;
   reactions: IReaction[];
@@ -39,6 +40,17 @@ export interface IPost {
 export interface IPayload extends JwtPayload {
   _id: string;
   role: SYS_ROLE;
+}
+
+export interface IComment {
+  _id: ObjectId;
+  userId: ObjectId;
+  postId: ObjectId;
+  parentId: ObjectId[];
+  content:string;
+  attachments:IAttachment;
+  reactions:IReaction[];
+  mentions?:ObjectId[];
 }
 
 declare module "express" {

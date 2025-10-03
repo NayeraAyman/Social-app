@@ -8,7 +8,7 @@ class AbstractRepository {
     }
     async create(item) {
         const doc = new this.model(item);
-        return await doc.save();
+        return (await doc.save());
     }
     async exist(filter, projection, options) {
         return await this.model.findOne(filter, projection, options);

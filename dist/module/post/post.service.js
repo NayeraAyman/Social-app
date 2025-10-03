@@ -34,12 +34,39 @@ class PostService {
             return reaction.userId.toString() == userId.toString();
         });
         if (userReactedIndex == -1) {
-            await this.postRepository.update({ _id: id }, { $push: { reactions: { userId, reaction } } });
+            await this.postRepository.update({ _id: id }, {
+                $push: {
+                    reactions: {
+                        userId,
+                        reaction,
+                    },
+                },
+            });
+        }
+        else if ([undefined, null, ""].includes(reaction)) {
+            await this.postRepository.update({ _id: id }, { $pull: { reactions: postExist.reactions[userReactedIndex] } });
         }
         else {
             await this.postRepository.update({ _id: id, "reactions.userId": userId }, { "reactions.$.reaction": reaction });
         }
         res.sendStatus(204);
+    };
+    getSpecificPost = async (req, res, next) => {
+        const { id } = req.params;
+        const post = await this.postRepository.getOne({ _id: id }, {}, {
+            populate: [
+                { path: "userId", select: "fullName firstName lastName" },
+                { path: "reactions.userId", select: "fullName firstName lastName" },
+                { path: "comments", match: { parentId: [] } },
+            ],
+        });
+        if (!post) {
+            throw new utils_1.NotFoundException("Post not found");
+        }
+        return res.status(200).json({
+            message: "Post fetched successfully",
+            data: { post },
+        });
     };
 }
 exports.default = new PostService();

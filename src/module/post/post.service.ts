@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CreatePostDto } from "./post.dto";
 import { PostFactoryService } from "./factory";
 import { PostRepository } from "../../DB";
-import { NotFoundException } from "../../utils";
+import { NotFoundException, REACTION } from "../../utils";
 
 class PostService {
   private readonly postFactoryService = new PostFactoryService();
@@ -46,7 +46,19 @@ class PostService {
     if (userReactedIndex == -1) {
       await this.postRepository.update(
         { _id: id },
-        { $push: { reactions: { userId, reaction } } }
+        {
+          $push: {
+            reactions: {
+              userId,
+              reaction,
+            },
+          },
+        }
+      );
+    } else if ([undefined, null, ""].includes(reaction)) {
+      await this.postRepository.update(
+        { _id: id },
+        { $pull: { reactions: postExist.reactions[userReactedIndex] } }
       );
     } else {
       await this.postRepository.update(
@@ -56,6 +68,31 @@ class PostService {
     }
 
     res.sendStatus(204);
+  };
+  public getSpecificPost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id } = req.params;
+    const post = await this.postRepository.getOne(
+      { _id: id },
+      {},
+      {
+        populate: [
+          { path: "userId", select: "fullName firstName lastName" },
+          { path: "reactions.userId", select: "fullName firstName lastName" },
+          { path: "comments", match: { parentId: [] } },
+        ],
+      }
+    );
+    if (!post) {
+      throw new NotFoundException("Post not found");
+    }
+    return res.status(200).json({
+      message: "Post fetched successfully",
+      data: { post },
+    });
   };
 }
 export default new PostService();

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, type Express } from "express";
 import { connectDB } from "./DB";
 import { AppError } from "./utils/error";
-import { authRouter, userRouter, postRouter } from "./module";
+import { authRouter, userRouter, postRouter, commentRouter } from "./module";
 export function bootstarp(app: Express, express: any) {
   connectDB();
   app.use(express.json());
@@ -12,7 +12,7 @@ export function bootstarp(app: Express, express: any) {
 
   //posts
   app.use("/post", postRouter);
-  //coments
+  //comments
   //messages
   app.use("/{*dummy}", (req, res, next) => {
     return res.status(404).json({ message: "invalid router", success: false });

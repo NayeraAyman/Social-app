@@ -13,7 +13,7 @@ function bootstarp(app, express) {
     app.use("/user", module_1.userRouter);
     //posts
     app.use("/post", module_1.postRouter);
-    //coments
+    //comments
     //messages
     app.use("/{*dummy}", (req, res, next) => {
         return res.status(404).json({ message: "invalid router", success: false });
